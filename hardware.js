@@ -1,4 +1,7 @@
 // Im just testing git commit commands
+// Reminder -> Will need node pi-blaster libraries
+// Reminder -> Will need node SensorTag Libraries
+// Reminder -> Will need  ......
 var SensorTagReader = function(sensorTagId) {
 	this.sensorTagId = sensorTagReader;
 }
