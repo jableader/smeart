@@ -1,3 +1,4 @@
+// Im just testing git commit commands
 var SensorTagReader = function(sensorTagId) {
 	this.sensorTagId = sensorTagReader;
 }
