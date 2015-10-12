@@ -2,6 +2,7 @@
 	"name": "smeart",
 	"version": "0.0.1",
 	"dependancies": {
-		"express": "*"
+		"express": "*",
+		"body-parser": "*"
 	}
 }

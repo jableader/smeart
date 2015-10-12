@@ -5,6 +5,10 @@ var DEFAULT_BLOCK_TIME = 5*ONE_MINUTE;
 
 var hardware = require('./hardware.js');
 var app = require('express');
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 
 var indoorSensor = hardware.getInternalTempSensor();
 var outdoorSensor = hardware.getExternalTempSensor();
@@ -28,7 +32,7 @@ var setState = (function() {
     }
   }
 
-  return function(state, force, blockTime) {
+  return function(state, blockTime, force) {
       if (force || !blockChange) {
         if (blockTimeoutId !== null)
           setBlockTimeout(null);
@@ -41,17 +45,34 @@ var setState = (function() {
   }
 })();
 
-var recentlyChangedBlinds = function() {
-  hasRecentlyChangedBlinds = true;
-  setTimeout(function() { hasRecentlyChangedBlinds = false; }, 5*ONE_MINUTE);
-}
 
 indoorSensor.onChange(1, function(temp) {
-  var blindsState = blinds.getState()
-  if (temp > CLOSE_BLINDS_THRESHOLD && blindsState === 'open') {
-    blinds.setState('closed');
+  var blindsState = blinds.getState();
+  if (temp > CLOSE_BLINDS_THRESHOLD && blindsState === 'open' && outdoorSensor.getTemp() > temp) {
+    setState('closed', DEFAULT_BLOCK_TIME);
   }
-  else if (temp < CLOSE_BLINDS_THRESHOLD && blindsState === 'closed') {
-    blinds.setState('open');
+  else if (temp < CLOSE_BLINDS_THRESHOLD && blindsState === 'closed' && outdoorSensor.getTemp() < temp) {
+    setState('open', DEFAULT_BLOCK_TIME);
   }
-})
+});
+
+app.route('/state')
+  .get(function(req, res) {
+    res.json({
+      state: blinds.getState(),
+      indoorTemp: indoorSensor.getTemp(),
+      outdoorTemp: outdoorSensor.getTemp()
+    });
+  })
+  .post('/state', function(req, res) {
+    var state = req.body.state;
+
+    if (state == 'closed' || state == 'open') {
+      setState(state, true, req.body.timeout);
+      res.json({});
+    } else {
+      res.status(400).json({
+        state: "Please set the parameter 'state' to be either \"open\" or \"closed\""
+      });
+    }
+  });
