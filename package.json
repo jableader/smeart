@@ -3,6 +3,8 @@
 	"version": "0.0.1",
 	"dependancies": {
 		"express": "*",
-		"body-parser": "*"
+		"body-parser": "*",
+		"pi-blaster": "*",
+		"rpi-gpio": "*"
 	}
 }
