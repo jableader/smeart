@@ -6,7 +6,8 @@ var SensorTagReader = function(sensorTagId, name) {
 	this.currentTemperature = null;
 	this.isReady = false;
 	
-	sensortag.discoverById(sensorTagId, function(sensorTag) {
+	console.log("Looking for " + name + " as " + sensorTagId);
+	sensortag.discoverByUuid(sensorTagId, function(sensorTag) {
 		console.log("Connected to " + name);
 		
 		sensorTag.enableIrTemperature(function(err) {
@@ -46,7 +47,7 @@ SensorTagReader.prototype.getTemp = function() {
 
 var pins = {
 	close: 17, // P-11
-	open: 21, // P-13
+	open: 27, // P-13
 	led: 22 // P-15
 }
 
@@ -79,7 +80,7 @@ blinds.setState = function(state) {
 	}
 }
 
-blinds.setState('open');
+setTimeout(function() { blinds.setState('open'); }, 500);
 
 module.exports = exports = {};
 exports.getBlinds = function() { return blinds; };

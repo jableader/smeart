@@ -60,6 +60,8 @@ app.route('/state')
 		var state = req.body.state;
 		var timeout = req.body.timeout ? req.body.timeout : DEFAULT_BLOCK_TIME;
 		
+		console.log("Setting state to " + state)
+
 		if (state == 'closed' || state == 'open') {
 			setState(state, timeout, true);
 			res.json({});
@@ -69,3 +71,7 @@ app.route('/state')
 			});
 		}
 	});
+
+app.listen(80, function() {
+	console.log("Listening");
+});
