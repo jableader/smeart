@@ -46,6 +46,8 @@ indoorSensor.onChange(1, function(temp) {
 
 app.route('/state')
 	.get(function(req, res) {
+		console.log("Recieved state GET");
+		
 		res.json({
 			state: blinds.getState(),
 			indoorTemp: indoorSensor.getTemp(),
@@ -53,6 +55,8 @@ app.route('/state')
 		});
 	})
 	.post('/state', function(req, res) {
+		console.log("Recieved state POST");
+		
 		var state = req.body.state;
 		var timeout = req.body.timeout ? req.body.timeout : DEFAULT_BLOCK_TIME;
 		
