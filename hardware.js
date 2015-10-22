@@ -7,10 +7,10 @@ var SensorTagReader = function(sensorTagId, name) {
 	this.isReady = false;
 	
 	console.log("Looking for " + name + " as " + sensorTagId);
-	sensortag.discoverByUuid(sensorTagId, function(sensorTag) {
+	sensortag.discoverById(sensorTagId, function(tag) {
 		console.log("Connected to " + name);
 		
-		sensorTag.enableIrTemperature(function(err) {
+		tag.enableIrTemperature(function(err) {
 			if (err) {
 				console.log("Error connecting to " + name + ": " + err);
 				return;
@@ -20,7 +20,7 @@ var SensorTagReader = function(sensorTagId, name) {
 			
 			this.isReady = true;
 			setInterval(function() {
-				sensorTag.readIrTemperature(function(error, otemp, atemp) {
+				tag.readIrTemperature(function(error, otemp, atemp) {
 					console.log(name + " is at " + otemp); 
 					
 					this.previousTemp = this.currentTemp;
