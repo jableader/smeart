@@ -2,6 +2,8 @@ var sensortag = require('sensortag');	    // Calling SensorTag Libraries
 var piblaster = require('pi-blaster.js');   // Calling pi-blaster libraries
 
 var SensorTagReader = function(sensorTagId, name) {
+	var _this = this;
+	
 	this.previousTemperature = null;
 	this.currentTemperature = null;
 	this.isReady = false;
@@ -10,31 +12,48 @@ var SensorTagReader = function(sensorTagId, name) {
 	sensortag.discoverById(sensorTagId, function(tag) {
 		console.log("Connected to " + name);
 		
-		tag.enableIrTemperature(function(err) {
+		tag.connectAndSetUp(function(err) {
 			if (err) {
 				console.log("Error connecting to " + name + ": " + err);
 				return;
 			}
 			
-			console.log("Connected " + name + " is ready and listening");
-			
-			this.isReady = true;
-			setInterval(function() {
-				tag.readIrTemperature(function(error, otemp, atemp) {
-					console.log(name + " is at " + otemp); 
-					
-					this.previousTemp = this.currentTemp;
-					this.currentTemp = Math.round(otemp);
-					
-					if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold)){
-						this.changeCallback(this.currentTemperature);
-					}
-				});
-			}, 1000);
+			tag.enableIrTemperature(function(err) {
+				if (err) {
+					console.log("Error enabling temp for " + name + " : " + err);
+					return;
+				}
+				
+				_this.startReadSensorLoop(tag);
+			});
 		});
 	});
 }
 
+
+SensorTagReader.prototype.startReadSensorLoop = function(tag) {
+	console.log("Sensor " + name + " is ready and listening");
+	var _this = this
+	this.isReady = true;
+	
+	var irfunction = function(error, otemp, atemp) {
+		console.log(name + " is at " + otemp); 
+		
+		this.previousTemp = this.currentTemp;
+		this.currentTemp = Math.round(otemp);
+		
+		if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold)){
+			this.changeCallback(this.currentTemperature);
+		}
+	}
+	
+	var _this = this;
+	setInterval(function() {
+		tag.readIrTemperature(function(){
+			irfunction.apply(_this, arguments);
+		});
+	}, 1000);
+}
 
 SensorTagReader.prototype.onChange = function(callback, threshold) {
 	this.changeCallback = callback;
