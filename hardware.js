@@ -4,6 +4,7 @@ var piblaster = require('pi-blaster.js');   // Calling pi-blaster libraries
 var SensorTagReader = function(sensorTagId, name) {
 	var _this = this;
 	
+	this.name = name;
 	this.previousTemperature = null;
 	this.currentTemperature = null;
 	this.isReady = false;
@@ -32,12 +33,12 @@ var SensorTagReader = function(sensorTagId, name) {
 
 
 SensorTagReader.prototype.startReadSensorLoop = function(tag) {
-	console.log("Sensor " + name + " is ready and listening");
+	console.log("Sensor " + this.name + " is ready and listening");
 	var _this = this
 	this.isReady = true;
 	
 	var irfunction = function(error, otemp, atemp) {
-		console.log(name + " is at " + otemp); 
+		console.log(this.name + " is at " + otemp); 
 		
 		this.previousTemp = this.currentTemp;
 		this.currentTemp = Math.round(otemp);
