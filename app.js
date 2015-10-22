@@ -4,7 +4,7 @@ var ONE_MINUTE = 60*1000
 var DEFAULT_BLOCK_TIME = 5*ONE_MINUTE;
 
 var hardware = require('./hardware.js');
-var app = require('express');
+var app = require('express')();
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -54,7 +54,7 @@ app.route('/state')
 			outdoorTemp: outdoorSensor.getTemp()
 		});
 	})
-	.post('/state', function(req, res) {
+	.post(function(req, res) {
 		console.log("Recieved state POST");
 		
 		var state = req.body.state;

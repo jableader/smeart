@@ -25,7 +25,7 @@ var SensorTagReader = function(sensorTagId, name) {
 					this.previousTemp = this.currentTemp;
 					this.currentTemp = Math.round(otemp);
 					
-					if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold){
+					if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold)){
 						this.changeCallback(this.currentTemperature);
 					}
 				});
@@ -35,19 +35,19 @@ var SensorTagReader = function(sensorTagId, name) {
 }
 
 
-sensorTagReader.prototype.onChange = function(callback, threshold) {
+SensorTagReader.prototype.onChange = function(callback, threshold) {
 	this.changeCallback = callback;
 	this.changeThreshold = threshold;
 }
 
-sensorTagReader.prototype.getTemp = function() {
+SensorTagReader.prototype.getTemp = function() {
 	return this.currentTemp;
 }
 
 var pins = {
-	led: 23,
-	open: 24,
-	close: 25
+	close: 17, // P-11
+	open: 21, // P-13
+	led: 22 // P-15
 }
 
 var pulsePin = function(pin, time) {
