@@ -36,8 +36,12 @@ var setState = (function() {
 })();
 
 
-indoorSensor.onChange(1, function(temp) {
+indoorSensor.onChange(function(temp) {
 	var blindsState = blinds.getState();
+
+	console.log("Inside got called with temp " + temp);
+	console.log("Outside is at " + outdoorSensor.getTemp());
+	console.log("Blinds are currently " + blindsState);
 	
 	if (temp > CLOSE_BLINDS_THRESHOLD && blindsState === 'open' && outdoorSensor.getTemp() > temp) {
 		console.log("Closing blinds");
@@ -47,7 +51,7 @@ indoorSensor.onChange(1, function(temp) {
 		console.log("Opening blinds");
 		setState('open', DEFAULT_BLOCK_TIME);
 	}
-});
+}, 1);
 
 app.route('/state')
 	.get(function(req, res) {

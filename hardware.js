@@ -5,8 +5,8 @@ var SensorTagReader = function(sensorTagId, name) {
 	var _this = this;
 	
 	this.name = name;
-	this.previousTemperature = null;
-	this.currentTemperature = null;
+	this.previousTemp = null;
+	this.currentTemp = null;
 	this.isReady = false;
 	
 	console.log("Looking for " + name + " as " + sensorTagId);
@@ -38,13 +38,13 @@ SensorTagReader.prototype.startReadSensorLoop = function(tag) {
 	this.isReady = true;
 	
 	var irfunction = function(error, otemp, atemp) {
-		console.log(this.name + " is at " + otemp); 
+		//console.log(this.name + " is at " + otemp); 
 		
 		this.previousTemp = this.currentTemp;
 		this.currentTemp = Math.round(otemp);
 		
 		if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold)){
-			this.changeCallback(this.currentTemperature);
+			this.changeCallback(this.currentTemp);
 		}
 	}
 	
