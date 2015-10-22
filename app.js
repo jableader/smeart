@@ -29,6 +29,8 @@ var setState = (function() {
 		if (force || !isBlocked()) {
 			setBlockTimeout(blockTime);
 			blinds.setState(state);
+		} else {
+			console.log("Got blocked!");	
 		}
 	}
 })();
@@ -36,10 +38,13 @@ var setState = (function() {
 
 indoorSensor.onChange(1, function(temp) {
 	var blindsState = blinds.getState();
+	
 	if (temp > CLOSE_BLINDS_THRESHOLD && blindsState === 'open' && outdoorSensor.getTemp() > temp) {
+		console.log("Closing blinds");
 		setState('closed', DEFAULT_BLOCK_TIME);
 	}
 	else if (temp < CLOSE_BLINDS_THRESHOLD && blindsState === 'closed' && outdoorSensor.getTemp() < temp) {
+		console.log("Opening blinds");
 		setState('open', DEFAULT_BLOCK_TIME);
 	}
 });
