@@ -1,115 +1,87 @@
-// Im just testing git commit commands
-// Reminder -> Will need node pi-blaster libraries
-// Reminder -> Will need node SensorTag Libraries
-// Reminder -> Will need  ......
-
-//////////////////////////////////////////////////////
-// Calling required libraries
-var SensorTag = require('sensortag');	    // Calling SensorTag Libraries
+var sensortag = require('sensortag');	    // Calling SensorTag Libraries
 var piblaster = require('pi-blaster.js');   // Calling pi-blaster libraries
 
-//////////////////////////////////////////////////////
-// Setting Pin I/O
-// Should be called in blinds and light -> piblaster.setPwm(17, 0);    //setPWM(Pin Numbber, Pwm Value bewtween 0 & 1)
-//////////////
-
-//////////////////////////////////////////////////////
-// Global Variables
-
-var SENSOR_TAG_PREVIOS_TEMP_VAL = "0";    // Giving an initial temp reference when booting up, alternatively creates a counter which counts to one before compring another value
-var SENSOR_TAG_STORE_COUNT      = "0";
-
-var SensorTagReader = function(sensorTagId) {
-	this.sensorTagId = sensorTagReader;
+var SensorTagReader = function(sensorTagId, name) {
+	this.previousTemperature = null;
+	this.currentTemperature = null;
+	this.isReady = false;
+	
+	sensortag.discoverById(sensorTagId, function(sensorTag) {
+		console.log("Connected to " + name);
+		
+		sensorTag.enableIrTemperature(function(err) {
+			if (err) {
+				console.log("Error connecting to " + name + ": " + err);
+				return;
+			}
+			
+			console.log("Connected " + name + " is ready and listening");
+			
+			this.isReady = true;
+			setInterval(function() {
+				sensorTag.readIrTemperature(function(error, otemp, atemp) {
+					console.log(name + " is at " + otemp); 
+					
+					this.previousTemp = this.currentTemp;
+					this.currentTemp = Math.round(otemp);
+					
+					if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold){
+						this.changeCallback(this.currentTemperature);
+					}
+				});
+			}, 1000);
+		});
+	});
 }
 
 
 sensorTagReader.prototype.onChange = function(callback, threshold) {
-	//When this sensortag's temp changes by more than 'threshold', 
-	//	callback(currentTemp);
-    
-    if (SENSOR_TAG_STORE_COUNT == "0")    // If true, just store initial temp value and do nothing else
-    {
-    	SENSOR_TAG_PREVIOS_TEMP_VAL = callback;
-    	SENSOR_TAG_STORE_COUNT++;  
-    }
-    else
-    {
-    	// I assume callback is curent temp value
-        
-        if (SENSOR_TAG_PREVIOS_TEMP_VAL < callback)
-        {  
-            //  Upward slope
-    		if ((callback - SENSOR_TAG_PREVIOS_TEMP_VAL) >= threshold)
-    			??????callback(currentTemp)????????
-        }
-    	else
-    	{     
-    	    // Downward slope
-    	    if ((SENSOR_TAG_PREVIOS_TEMP_VAL - callback) >= threshold)
-    	    	????????????????????????????????????????????????
-    	    ??????????????????????????????????????
-    	}
-    		
-    }
-    
+	this.changeCallback = callback;
+	this.changeThreshold = threshold;
 }
 
 sensorTagReader.prototype.getTemp = function() {
-	//return the current temperature
+	return this.currentTemp;
+}
 
-	// Am I to assume that I 
-	// First we have to locate Sensor tag (Just copy tutorials)
+var pins = {
+	led: 21,
+	open: 22,
+	close: 23
+}
 
-	// Enable the 
-	return temperature???????????????????????????????????
+var pulsePin = function(pin, time) {
+	console.log("Pulsing " + pin);
+	piblaster.setPwm(pin, 1);
+	setTimeout(function() {
+		console.log("Fin pulsing " + pin);
+		piblaster.setPwm(pin, 0);
+	}, time);
 }
 
 var blinds = {}
 blinds.getState = function() {
-	// return "open" or "closed"
-
+	return this.state;
 }
 
 
-blinds.setState = function(state, onFinished) {
-	if (state == "open") 
-	{
-		//open the blinds
-		//call onFinished
-		while (state != onFinished)     // Keep turning servo // < check if syntax is correct
-		{  
-			piblaster.setPwm(17, 1);    // setPWM(Arbitrary Input Pin Numbber, Pwm Value bewtween 0 & 1)
-            if (/* Need to figure out a way to determnine if the servos is completly opening blinds*/)
-            {
-            	return onFinished;	    // Fully opened blinds, therefore signal
-            }
-        }
-
+blinds.setState = function(state) {
+	if (state === "open") {
+		pulsePin(pins.open, 100);
+		this.state = "open";
 	} 
-	else if (state == "closed") 
-	{
-		//close the blinds
-		//call onFinished
-
-		// TO DAVE. MAYBE WE USE ANOTHER PIN AND THIS PIN WILL CONNECT TO MOTOR BRIDGE NEGATIVE TERMINAL, THAT WAY IT COULD REVERSE OPENING?
-
-		while (state != onFinished)
-		{
-			piblaster.setPwm(18, 1);    // setPWM(Arbitrary Input Pin Numbber, Pwm Value bewtween 0 & 1)
-			if (/* Need to figure out a way to determnine if the servos is completly closing blinds*/)
-            {
-            	return onFinished;	    // Fully opened blinds, therefore signal
-            }
-		}
-	} 
-	else 
-	{
+	else if (state === "closed") {
+		pulsePin(pins.close, 100);
+		this.state = "closed";
+	}
+	else {
 		throw "Invalid state: '" + state + "'";
 	}
 }
 
-module.exports = exports = {};    // Not sure about this atm
+blinds.setState('open');
+
+module.exports = exports = {};
 exports.getBlinds = function() { return blinds; };
-exports.getInternalTempSensor = function() { return new SensorTagReader("ID OF INSIDE TAG"); };
-exports.getExternalTempSensor = function() { return new SensorTagReader("ID OF OUTSIDE TAG"); };
+exports.getInternalTempSensor = function() { return new SensorTagReader("b0b448b9d906", "inside_tag"); };
+exports.getExternalTempSensor = function() { return new SensorTagReader("b0b448bed202", "outside_tag"); };
