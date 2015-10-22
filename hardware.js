@@ -45,9 +45,9 @@ sensorTagReader.prototype.getTemp = function() {
 }
 
 var pins = {
-	led: 21,
-	open: 22,
-	close: 23
+	led: 23,
+	open: 24,
+	close: 25
 }
 
 var pulsePin = function(pin, time) {
