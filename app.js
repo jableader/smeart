@@ -4,12 +4,14 @@ var ONE_MINUTE = 60*1000
 var DEFAULT_BLOCK_TIME = 5*ONE_MINUTE;
 
 var hardware = require('./hardware.js');
-var app = require('express')();
+var express = require('express');
+var app = express();
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
-app.use('/static', express.static(__dirname + 'static'))
+app.use('/static', express.static('static'))
+app.use('/', express.static('static/page.html'));
 
 var indoorSensor = hardware.getInternalTempSensor();
 var outdoorSensor = hardware.getExternalTempSensor();
@@ -40,9 +42,9 @@ var setState = (function() {
 indoorSensor.onChange(function(temp) {
 	var blindsState = blinds.getState();
 
-	console.log("Inside got called with temp " + temp);
-	console.log("Outside is at " + outdoorSensor.getTemp());
-	console.log("Blinds are currently " + blindsState);
+	//console.log("Inside got called with temp " + temp);
+	//console.log("Outside is at " + outdoorSensor.getTemp());
+	//console.log("Blinds are currently " + blindsState);
 	
 	if (temp > CLOSE_BLINDS_THRESHOLD && blindsState === 'open' && outdoorSensor.getTemp() > temp) {
 		console.log("Closing blinds");

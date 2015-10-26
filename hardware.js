@@ -102,7 +102,7 @@ blinds.setState = function(state) {
 	}
 }
 
-setTimeout(function() { blinds.setState('open'); }, 500);
+setTimeout(function() { blinds.setState('closed'); }, 500);
 
 module.exports = exports = {};
 exports.getBlinds = function() { return blinds; };
