@@ -8,12 +8,20 @@
 		margin: 0.5em;
 	}
 	
+	span {
+		font-size: 1.2em;
+	}
+	
+	body {
+		font-size: 1.1em;
+	}
+
 	</style>
 	<script type="text/javascript" src="/static/jquery.js"></script>
 </head>
 
 <body>
-	<img src="static/header.png" style="width: 101%; overflow-x: hidden"/>
+	<img src="static/header.png" style="width: 101%; overflow-x: hidden; max-height: 60%;"/>
 	
 	<div style="width:45%; float: left;">		
 		Inside Temp: <span id="lblInside">Unknown</span> <br />
@@ -43,14 +51,19 @@
 		setState('closed');
 	});
 	
+	var formatTemp = function(t){
+		return t == null ? "Unknown" : t + "°";
+	}
+		
 	var updateValues = function() {
-		$.json('/state', function(data){
-			$('#insideTemp').html(data.insideTemp);
-			$('#outsideTemp').html(data.outsideTemp);
+		$.getJSON('/state', function(data){
+			console.log("Updating values " + data);
+			$('#lblInside').html(formatTemp(data.indoorTemp));
+			$('#lblOutside').html(formatTemp(data.outdoorTemp));
 		});
 	}
 	
-	SetInterval(updateValues, 1000);
+	setInterval(updateValues, 1000);
 
 	</script>
 	

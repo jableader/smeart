@@ -26,7 +26,7 @@ var setState = (function() {
 	}
 	
 	var isBlocked = function() {
-		return blockUntil !== null && (Date.now() < blockUntil);
+		return false; //return blockUntil !== null && (Date.now() < blockUntil);
 	}
 
 	return function(state, blockTime, force) {
@@ -59,7 +59,7 @@ indoorSensor.onChange(function(temp) {
 
 app.route('/state')
 	.get(function(req, res) {
-		console.log("Recieved state GET");
+		//console.log("Recieved state GET");
 		
 		res.json({
 			state: blinds.getState(),
@@ -95,7 +95,8 @@ app.route('/')
 				return;
 			}
 			
-			res.end(data);
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
+			res.end(data, 'utf8');
 		});
 	});
 	
