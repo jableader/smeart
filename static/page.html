@@ -1,21 +1,37 @@
 <html>
 <head>
 	<title>Smeart Systems!</title>
+	<style type="text/css">
+	button {
+		width: 50%;
+		height: 4em;
+		margin: 0.5em;
+	}
 	
+	</style>
 	<script type="text/javascript" src="/static/jquery.js"></script>
 </head>
 
 <body>
-	<h1>Here is some text</h1>
+	<img src="header.png" style="width: 101%; overflow-x: hidden"/>
 	
-	<button id="btnClose">Close</button>
-	<button id="btnOpen">Open</button>
+	<div style="width:45%; float: left;">		
+		Inside Temp: <span id="lblInside">Unknown</span> <br />
+		<button id="btnClose">Close</button>
+	</div>
+	<div style="width: 45%; float: right; text-align: right;">
+		Outside Temp: <span id="lblOutside">Unknown</span> <br />
+		<button id="btnOpen">Open</button>
+	</div>
+	
+	<br />
 	
 	<script type="text/javascript">
 	
 	var setState = function(state) {
 		$.post("/state", {"state": state}, function(response){
 			console.log("Success: " + response);
+			updateValues();
 		});
 	};
 	
@@ -27,6 +43,15 @@
 		setState('closed');
 	});
 	
+	var updateValues = function() {
+		$.json('/state', function(data){
+			$('#insideTemp').html(data.insideTemp);
+			$('#outsideTemp').html(data.outsideTemp);
+		});
+	}
+	
+	SetInterval(updateValues, 1000);
+
 	</script>
 	
 </body>

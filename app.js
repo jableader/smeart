@@ -96,7 +96,7 @@ app.route('/')
 			}
 			
 			res.end(data);
-		}))
+		});
 	});
 	
 app.listen(80, function() {
