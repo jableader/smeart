@@ -88,12 +88,12 @@ blinds.getState = function() {
 
 blinds.setState = function(state) {
 	if (state === "open") {
-		setPwm(pins.led, 0);
+		piblaster.setPwm(pins.led, 0);
 		pulsePin(pins.open, 100);
 		this.state = "open";
 	} 
 	else if (state === "closed") {
-		setPwm(pins.led, 1);
+		piblaster.setPwm(pins.led, 1);
 		pulsePin(pins.close, 100);
 		this.state = "closed";
 	}

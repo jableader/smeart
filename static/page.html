@@ -1,0 +1,33 @@
+<html>
+<head>
+	<title>Smeart Systems!</title>
+	
+	<script type="text/javascript" src="/static/jquery.js"
+</head>
+
+<title>
+	<h1>Here is some text</h1>
+	
+	<button id="btnClose" value="Close" />
+	<button id="btnOpen" value="Open" />
+	
+	<script type="text/javascript">
+	
+	var setState = function(state) {
+		$.post("/state", {"state": state}, function(response){
+			console.log("Success: " + response);
+		});
+	};
+	
+	$('.btnOpen').click(function() {
+		setState('open');
+	});
+	
+	$('.btnOpen').click(function() {
+		setState('closed');
+	});
+	
+	</script>
+	
+</title>
+</html>
