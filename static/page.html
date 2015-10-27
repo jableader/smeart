@@ -92,8 +92,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 	<img src="/static/sweaty.png" />
 	<div class="container">
 		<div class="temp">
-			<div class="temp-label">Inside Temp</div>
-			<span id="lblInside">Unknown</span>
+			<div class="temp-label">Inside&nbsp; Temp</div>
+			<span id="lblInside">?°</span>
 		</div>
 		<div class="button" id="btnClose">
 			<span class="label">CLOSE</span>
@@ -102,7 +102,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 	<div class="container right">
 		<div class="temp">
 			<div class="temp-label">Outside Temp</div>
-			<span id="lblOutside">Unknown</span>
+			<span id="lblOutside">?°</span>
 		</div>
 		
 		<div class="button" id="btnOpen">
@@ -130,7 +130,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 	});
 	
 	var formatTemp = function(t){
-		return t == null ? "Unknown" : t + "°";
+		return (t == null ? "?" : t) + "°";
 	}
 		
 	var updateValues = function() {
