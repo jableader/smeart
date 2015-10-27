@@ -1,6 +1,17 @@
 var sensortag = require('sensortag');	    // Calling SensorTag Libraries
 var piblaster = require('pi-blaster.js');   // Calling pi-blaster libraries
 
+var rng = function(period){
+	var base = 21;
+	var variation = 10;
+	var jitter = 1;
+	
+	var t = 0;
+	return function(){
+		return base*Math.sin(2*Math.pi*(++t % period)/period) + Math.random()*(2*jitter)-jitter;
+	}
+}
+
 var SensorTagReader = function(sensorTagId, name) {
 	var _this = this;
 	
@@ -10,25 +21,8 @@ var SensorTagReader = function(sensorTagId, name) {
 	this.isReady = false;
 	
 	console.log("Looking for " + name + " as " + sensorTagId);
-	sensortag.discoverById(sensorTagId, function(tag) {
-		console.log("Connected to " + name);
-		
-		tag.connectAndSetUp(function(err) {
-			if (err) {
-				console.log("Error connecting to " + name + ": " + err);
-				return;
-			}
-			
-			tag.enableIrTemperature(function(err) {
-				if (err) {
-					console.log("Error enabling temp for " + name + " : " + err);
-					return;
-				}
-				
-				_this.startReadSensorLoop(tag);
-			});
-		});
-	});
+	
+	this.startReadSensorLoop(null);
 }
 
 
@@ -38,8 +32,6 @@ SensorTagReader.prototype.startReadSensorLoop = function(tag) {
 	this.isReady = true;
 	
 	var irfunction = function(error, otemp, atemp) {
-		//console.log(this.name + " is at " + otemp); 
-		
 		this.previousTemp = this.currentTemp;
 		this.currentTemp = Math.round(otemp);
 		
@@ -49,10 +41,10 @@ SensorTagReader.prototype.startReadSensorLoop = function(tag) {
 	}
 	
 	var _this = this;
+	var r = rng(20+Math.random()*40);
 	setInterval(function() {
-		tag.readIrTemperature(function(){
-			irfunction.apply(_this, arguments);
-		});
+		var t = r();
+		irfunction.call(this, null, t, t);
 	}, 1000);
 }
 
