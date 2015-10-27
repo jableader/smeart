@@ -8,7 +8,7 @@ var rng = function(period){
 	
 	var t = 0;
 	return function(){
-		return base*Math.sin(2*Math.pi*(++t % period)/period) + Math.random()*(2*jitter)-jitter;
+		return base + variation*Math.sin(2*Math.PI*(++t % period)/period) + Math.random()*(2*jitter)-jitter;
 	}
 }
 
@@ -36,7 +36,7 @@ SensorTagReader.prototype.startReadSensorLoop = function(tag) {
 		this.currentTemp = Math.round(otemp);
 		
 		if (this.changeCallback && (Math.abs(this.currentTemp - this.previousTemp) >= this.changeThreshold)){
-			this.changeCallback(this.currentTemp);
+			this.changeCallback(21);
 		}
 	}
 	
@@ -44,7 +44,7 @@ SensorTagReader.prototype.startReadSensorLoop = function(tag) {
 	var r = rng(20+Math.random()*40);
 	setInterval(function() {
 		var t = r();
-		irfunction.call(this, null, t, t);
+		irfunction.call(_this, null, t, t);
 	}, 1000);
 }
 
