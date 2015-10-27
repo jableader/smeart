@@ -75,11 +75,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 		float: right;
 	}
 	
+	span {
+		font-size: 1.2em;
+	}
+	
+	body {
+		font-size: 1.1em;
+	}
+
 	</style>
 	<script type="text/javascript" src="/static/jquery.js"></script>
 </head>
 
 <body>
+<<<<<<< HEAD
 	<h1>Smeart Lighting and Heating</h1>
 	<img src="/static/sweaty.png" />
 	<div class="container">
@@ -90,6 +99,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 		<div class="button" id="btnClose">
 			<span class="label">CLOSE</span>
 		</div>
+=======
+	<img src="static/header.png" style="width: 101%; overflow-x: hidden; max-height: 60%;"/>
+	
+	<div style="width:45%; float: left;">		
+		Inside Temp: <span id="lblInside">Unknown</span> <br />
+		<button id="btnClose">Close</button>
+>>>>>>> 2399b62c3308b25767e6887b53121ea457ee659c
 	</div>
 	
 	<div class="container right">
@@ -122,10 +138,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8e1fc', end
 		setState('closed');
 	});
 	
+	var formatTemp = function(t){
+		return t == null ? "Unknown" : t + "°";
+	}
+		
 	var updateValues = function() {
 		$.getJSON('/state', function(data){
-			$('#lblInside').html(data.indoorTemp);
-			$('#lblOutside').html(data.outdoorTemp);
+			console.log("Updating values " + data);
+			$('#lblInside').html(formatTemp(data.indoorTemp));
+			$('#lblOutside').html(formatTemp(data.outdoorTemp));
 		});
 	}
 	
