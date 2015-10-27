@@ -1,10 +1,11 @@
 {
 	"name": "smeart",
 	"version": "0.0.1",
-	"dependancies": {
+	"dependencies": {
+		"sensortag": "*",
 		"express": "*",
 		"body-parser": "*",
-		"pi-blaster": "*",
+		"pi-blaster.js": "*",
 		"rpi-gpio": "*"
 	}
 }
